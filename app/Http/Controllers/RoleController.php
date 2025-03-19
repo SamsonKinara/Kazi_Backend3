@@ -115,8 +115,9 @@ class RoleController extends Controller
                 return "Failed To Delete Role";
             }
         }
+    }
         catch(\Exception $e){
             return "Error deleting the record";
         }
     }
-
+}
