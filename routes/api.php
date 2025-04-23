@@ -1,18 +1,24 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
 
-Route::get('/getAllRoles',
-[RoleController::class, 'index']);
+//Public Routes
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
 
-Route::post('/createRole',
-[RoleController::class, 'createRole']);
 
-Route::get('/getRole/{id}',
-[RoleController::class,'getRole']);
+Route::middleware('auth:sanctum')->group(function () {
+    //Auth Routes
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/user_info', [AuthController::class, 'user_info']);
+
+    
+    Route::post('Role', [RoleController::class, 'createRole']);
+    Route::get('getRole', [RoleController::class, 'index']);
+    Route::get('Role/{id}', [RoleController::class, 'getRole']);
+    Route::put('updateRole/{id}', [RoleController::class, 'updateRole']);
+    Route::delete('deleteRole/{id}', [RoleController::class, 'deleteRole']);
+});

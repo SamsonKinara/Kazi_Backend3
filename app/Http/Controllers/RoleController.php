@@ -61,7 +61,7 @@ class RoleController extends Controller
 
     public function getRole($id){
         try{
-            $role = Role::findOrfai($id);
+            $role = Role::findOrFail($id);
             if($role->count()>0){
                 return response()->json([$role],200);
             }
