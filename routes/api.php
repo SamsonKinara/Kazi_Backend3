@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Route;
 //Public Routes
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
+Route::middleware('auth:sanctum')->post('/profile-setup', [UserProfileController::class, 'setup']);
+
 
 
 Route::middleware('auth:sanctum')->group(function () {
