@@ -3,6 +3,10 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+
+Route::post('/profile-setup', [ProfileController::class, 'store']);
+
 
 
 //Public Routes
