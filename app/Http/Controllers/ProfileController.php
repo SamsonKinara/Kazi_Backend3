@@ -11,28 +11,43 @@ class ProfileController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'full_name' => 'required|string',
-            'bio' => 'nullable|string',
-            'location' => 'nullable|string',
-            'skills' => 'nullable|string',
+            'bio' => 'required|string',
+            'phone' => 'required|string',
+            'location' => 'required|string',
+            'profile_picture' => 'required|url',
         ]);
 
+        $user = Auth::user();
+
         $profile = Profile::updateOrCreate(
-            ['user_id' => Auth::id()],
-            $request->only('full_name', 'bio', 'location', 'skills')
+            ['user_id' => $user->id],
+            [
+                'bio' => $request->bio,
+                'phone' => $request->phone,
+                'location' => $request->location,
+                'profile_picture' => $request->profile_picture,
+            ]
         );
 
-        return response()->json($profile, 201);
+        return response()->json(['message' => 'Profile updated successfully', 'profile' => $profile], 200);
     }
 
     public function show()
     {
-        $profile = Auth::user()->profile;
+        $user = Auth::user();
+        $profile = Profile::where('user_id', $user->id)->first();
 
         if (!$profile) {
             return response()->json(['message' => 'Profile not found'], 404);
         }
 
-        return response()->json($profile);
+        return response()->json([
+            'name' => $user->name,
+            'email' => $user->email,
+            'bio' => $profile->bio,
+            'phone' => $profile->phone,
+            'location' => $profile->location,
+            'profile_picture' => $profile->profile_picture,
+        ]);
     }
 }
