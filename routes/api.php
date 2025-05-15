@@ -7,7 +7,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\LoginController;
 
 
-Route::post('/profile-setup', [ProfileController::class, 'store']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/profile', [ProfileController::class, 'store']);
+    Route::get('/profile', [ProfileController::class, 'show']);
+});
 
 
 

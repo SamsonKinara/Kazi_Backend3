@@ -1,32 +1,38 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\UserProfile;
+use App\Models\Profile;
+use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'location' => 'nullable|string|max:255',
-            'skills' => 'nullable|string',
+        $request->validate([
+            'full_name' => 'required|string',
             'bio' => 'nullable|string',
+            'location' => 'nullable|string',
+            'skills' => 'nullable|string',
         ]);
 
-        $profile = UserProfile::updateOrCreate(
-            ['user_id' => $validated['user_id']],
-            [
-                'location' => $validated['location'],
-                'skills' => $validated['skills'],
-                'bio' => $validated['bio'],
-            ]
+        $profile = Profile::updateOrCreate(
+            ['user_id' => Auth::id()],
+            $request->only('full_name', 'bio', 'location', 'skills')
         );
 
-        return response()->json([
-            'message' => 'Profile setup complete.',
-            'profile' => $profile,
-        ], 200);
+        return response()->json($profile, 201);
+    }
+
+    public function show()
+    {
+        $profile = Auth::user()->profile;
+
+        if (!$profile) {
+            return response()->json(['message' => 'Profile not found'], 404);
+        }
+
+        return response()->json($profile);
     }
 }
